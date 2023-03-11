@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<body style="font-family: 'Orbitron'; font-size: 32px">
+    <table border="0" cellpadding="0">
+        <tr th:each="result, stat :${results}">
+            <td th:each="c, s :${result}" width="30" height="30"
+                >
+                <div style="border: 1px solid blue;color:blue;width:30px;height:30px" th:if="${c!=' '}">
+                    <center>
+                        [[${c}]]
+                    </center>
+                </div>
+
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

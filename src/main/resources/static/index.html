@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <title>Enter all words</title>
+</head>
+<body>
+                <center>
+                    <div>
+                    <span class="input-group-text" id="basic-addon1" style="font-size:42px">
+                        <table>
+                            <tr>
+                                <td style="vertical-align: middle;padding: 0;margin: 0;">Enter comma separated words :</td>
+                            </tr>
+                        </table>
+                    </span>
+                    </div>
+                    <form action="/html" method="get">
+                    <input type="text" tabindex="1"
+                           class="form-control basicAutoComplete cfc" id="words" name="words"
+                           placeholder="Enter comma separated words..." style="font-size:42px"
+                    >
+                    <button class="btn btn-primary" type="submit" style="font-size:42px">Generate</button>
+                    </form>
+                </center>
+
+
+</body>
+</html>

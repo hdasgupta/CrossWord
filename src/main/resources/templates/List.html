@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+    <!-- Popper -->
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
+    <script th:src="@{js/jquery-3.6.0.min.js}"></script>
+    <script th:src="@{js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{js/bootstrap-autocomplete.min.js}"></script>
+    <script src="extensions/resizable/bootstrap-table-resizable.js"></script>
+    <script th:src="@{js/common.js}"></script>
+    <link rel="stylesheet" th:href="@{css/common.css}">
+
+    <title>Listing Page</title>
+</head>
+<body>
+
+<div th:if="${!results.isEmpty()}">
+    <center>
+    <div style="font-size:32px"><b><u>COMBINATIONS FOR <span th:each="word, stat :${words}">[[${word}]]<span th:if="${stat.count<words.size}">,</span></span></u></b></div>
+        <br/>
+    <table border="0" cellpadding="20">
+        <div th:each="result, stat :${results}" th:remove="tag">
+            <tr>
+                <td width="40">
+                    <input type="radio" th:id="${'radio_'+stat.count}" th:name="${'radio_'+stat.count}">
+                </td>
+                <td th:id="${'table_'+stat.count}">
+                    <script>
+                load("#[[${'table_'+stat.count}]]", {'cross': '[[${result}]]'}, "[[${#request.scheme + '://' + #request.serverName + ':' + #request.serverPort + #request.contextPath + '/cross'}]]")
+            </script>
+
+                </td>
+            </tr>
+            <tr>
+                <td height="20" colspan="2"><hr/></td>
+            </tr>
+        </div>
+
+    </table>
+    </center>
+</div>
+
+
+<div style="font-size:72px"  th:if="${results.isEmpty()}">
+    <center>
+        <b>NO COMBINATION FOUND FOR <span th:each="word, stat :${words}">[[${word}]]<span th:if="${stat.index<words.size}">,</span></span></b>
+    </center>
+</div>
+</body>
+</html>
