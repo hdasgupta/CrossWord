@@ -2,24 +2,19 @@ package com.vocabulary.controller
 
 import com.vocabulary.entities.Board
 import com.vocabulary.entities.Location
-import com.vocabulary.entities.Word
 import com.vocabulary.mappers.BOToEntity
 import com.vocabulary.mappers.EntityToBO
 import com.vocabulary.mappers.FindEntity
 import com.vocabulary.mappers.SaveEntity
 import com.vocabulary.repositories.BoardRepo
 import com.vocabulary.repositories.WordsRepo
-import com.vocabulary.words.Indices
-import com.vocabulary.words.Invert
-import com.vocabulary.words.Permutation
-import com.vocabulary.words.Words
+import com.vocabulary.words.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.ModelMap
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
-import java.util.Optional
 import java.util.stream.Collectors
 import javax.servlet.http.HttpServletRequest
 
@@ -47,11 +42,29 @@ class CrossWordController {
     @Autowired
     lateinit var entityToBO: EntityToBO
 
-    @RequestMapping(value = ["/html"])
-    fun html(@RequestParam words:String, map: ModelMap): String {
-
+    @RequestMapping(value = ["/addDesc"])
+    fun addDesc(@RequestParam words:String, map: ModelMap): String {
         val wordList = words.split(",").map { it.uppercase().trim() }.filter { it.isNotEmpty() }
+
+        map["words"] = wordList
+
+        return "Description"
+    }
+
+
+    @PostMapping(value = ["/html"])
+    fun html(request: HttpServletRequest, map: ModelMap): String {
+
+        val wordCount = request.getParameter("wordCount").toInt()
+
+        val wordList = (0 until wordCount)
+            .map { request.getParameter("word_$it") }
+
+        val descList = (0 until wordCount)
+            .map { request.getParameter("desc_$it") }
+
         val wordPermutation = permutation.words(wordList)
+        val descPermutation = permutation.words(descList)
 
         val wordsListPermutation = wordPermutation
             .map { it.joinToString(",") }
@@ -62,8 +75,8 @@ class CrossWordController {
             .mapNotNull { findEntity.findWords(it.id!!).orElse(null) }
 
         if(_wordsList.isEmpty()) {
-            _wordsList = wordPermutation
-                .map { Words(it) }
+            _wordsList = wordPermutation.indices
+                .map { Words(wordPermutation[it], descPermutation[it]) }
                 .map {
                     val word = boToEntity.map(it)
                     word
@@ -98,9 +111,23 @@ class CrossWordController {
     }
 
     @RequestMapping(value = ["/choose"])
-    fun choose(@RequestParam choose: Int, map: ModelMap): String {
-        map["results"] = getResult(findEntity.findBoard(choose))
-        map["choose"] = choose
+    fun choose(@RequestParam choose: Int, @RequestParam desc : Boolean = false, map: ModelMap): String {
+        val board = findEntity.findBoard(choose)
+
+        map["results"] =
+            if(!desc)
+                getResult(board)
+            else
+                getIndexes(board)
+
+        map["descriptions"] =
+            if(desc)
+                board!!.words!!.map { it.description!! }
+            else
+                listOf()
+
+        map["hasDesc"]=desc
+
         return "Choose"
     }
 
@@ -145,7 +172,85 @@ class CrossWordController {
         }
 
     }
-    fun getResult(cross: Board?): List<List<Invert>>  {
+
+    fun getIndexes(cross: Board?): List<List<Output>> {
+        if(cross != null) {
+            val locations =  cross.words!!
+                .flatMap { it.locations!! }
+
+            val hidden = cross.words!!
+                .flatMap { it.locations!! }
+                .stream()
+                .collect(Collectors.toMap(
+                    fun(location:Location)=location.row!!,
+                    fun(location:Location)= listOf(location.column!!),
+                    fun(list1:List<Int>, list2:List<Int>):List<Int> {
+                        val list = mutableListOf<Int>()
+                        list.addAll(list1)
+                        list.addAll(list2)
+                        return list
+                    }
+                ))
+
+            val words = cross.words!!.indices
+                .toList()
+                .stream()
+                .collect(Collectors.toMap(
+                    fun(i:Int)=cross.words!![i].locations!![0].row!!,
+                    fun(i:Int)= mapOf(Pair(cross.words!![i].locations!![0].column!!, i)),
+                    fun(map1:Map<Int, Int>, map2:Map<Int, Int>):Map<Int, Int> {
+                        val map = mutableMapOf<Int, Int>()
+                        map.putAll(map1)
+                        map.putAll(map2)
+                        return map
+                    }
+                    ))
+
+            val chars = locations.stream()
+                .collect(Collectors.toMap(
+                    fun(location: Location)=location.row!!,
+                    fun(location:Location)=mutableMapOf(Pair(location.column!!, location.char!!)),
+                    fun(map1:MutableMap<Int, String>, map2:MutableMap<Int, String>):MutableMap<Int, String> {
+                        val map = mutableMapOf<Int, String>()
+                        map.putAll(map1)
+                        map.putAll(map2)
+                        return map
+                    }
+                ))
+
+            val row:Int = locations.maxOf { location->location.row!! }
+            val column:Int = locations.maxOf { location->location.column!! }
+
+            return (0 .. row)
+                .map {
+                    r->
+                    (0 .. column)
+                        .map {
+                            c->
+                            Indexed(
+                                if(chars.containsKey(r) && chars[r]!!.containsKey(c)) {
+                                    chars[r]!![c]!!
+                                } else {
+                                    " "
+                                },
+                                if(words.containsKey(r) && words[r]!!.containsKey(c)) {
+                                    words[r]!![c]!!.toString()
+                                } else {
+                                    " "
+                                },
+                                hidden.containsKey(r) && hidden[r]!!.contains(c)
+                            )
+
+                        }
+                }
+
+        } else {
+            return listOf()
+        }
+
+    }
+
+    fun getResult(cross: Board?): List<List<Output>>  {
 
         if(cross != null) {
             val _cross = entityToBO!!.map(cross).strings()

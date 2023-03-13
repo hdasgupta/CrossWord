@@ -2,7 +2,7 @@ package com.vocabulary.words
 
 import java.util.stream.Collectors
 
-class Word(str: String):
+class Word(str: String, val desc: String):
     ArrayList<Location>(str.chars().mapToObj { Location(it.toChar()) }.toList()),
     Comparable<Word> {
 
@@ -58,7 +58,7 @@ class Word(str: String):
                     }
 
     fun copy(): Word {
-        val word = Word(toString())
+        val word = Word(toString(), desc)
         word.direction = direction
         word.indices.forEach {
             word[it] = this[it].copy()

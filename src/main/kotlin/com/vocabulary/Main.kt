@@ -10,11 +10,6 @@ import kotlin.math.min
 class CrossWordMain
 
 fun main(args: Array<String>) {
-    Words(listOf("last","test","rest","week")).all()
-        .forEach {
-            println(it)
-            println()
-        }
     runApplication<CrossWordMain>(*args)
 }
 

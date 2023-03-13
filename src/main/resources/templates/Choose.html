@@ -43,16 +43,18 @@
             <tr th:each="result, stat :${results}">
                 <td th:each="c, s :${result}" width="50" height="50"
                 >
+
                     <div th:id="${'char_'+stat.index+'_'+s.index}"
                          th:name="${'char_'+stat.index+'_'+s.index}"
                          style="border: 1px solid blue;color:blue;width:50px;height:50px;background-color: #aaa"
-                         th:if="${c.char!=' ' && c.inverted}">
+                         th:if="${!hasDesc && c.char!=' ' && c.inverted}">
                         <center>
                             <b>[[${c.char}]]</b>
                         </center>
                     </div>
                     <div style="border: 1px solid blue;color:blue;width:50px;height:50px;"
-                         th:if="${c.char!=' ' && !c.inverted}">
+                         th:if="${hasDesc || (!hasDesc && c.char!=' ' && !c.inverted)}">
+                        <span th:if="${hasDesc}" style="font-size: 6px">[[${''+c.index+'.'}]]</span>
                         <center>
                             <input th:id="${'char_'+stat.index+'_'+s.index}"
                                    th:name="${'char_'+stat.index+'_'+s.index}"
@@ -96,6 +98,17 @@
             </tr>
         </table>
         <br />
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr th:each="description, stat :${descriptions}">
+                <td width="30">
+                    [[${stat.count}]].
+                </td>
+                <td style="align: left">
+                    [[${descriptions}]]
+                </td>
+            </tr>
+        </table>
+        <br/>
         <button class="btn btn-primary" type="submit">Submit</button>
     </center>
 

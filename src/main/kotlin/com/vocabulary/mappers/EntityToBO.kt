@@ -26,7 +26,7 @@ class EntityToBO {
     }
 
     fun map(word: Word) : com.vocabulary.words.Word {
-        val _word = com.vocabulary.words.Word(" ".repeat(word.locations!!.size))
+        val _word = com.vocabulary.words.Word(" ".repeat(word.locations!!.size), word.description!!)
         (0 until word.locations!!.size)
             .forEach {
                 _word[it] = map(word.locations!![it])
@@ -57,7 +57,8 @@ class EntityToBO {
 
     fun map(words: Words):com.vocabulary.words.Words {
         val _words = com.vocabulary.words.Words(
-            words.wordList!!.split(",")
+            words.boards!![0].words!!.map { it.locations!!.joinToString("") { l->l.char!! } },
+            words.boards!![0].words!!.map { it.description!! }
         )
 
         _words.all(words.boards!!.map { map(it) })

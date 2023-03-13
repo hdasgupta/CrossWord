@@ -7,7 +7,7 @@ class Permutation {
 
     fun words(allWords: List<String>):List<List<String>> {
         val out: MutableList<MutableList<Int>> = mutableListOf()
-        permutation(4, out)
+        permutation(allWords.size  , out)
 
         return out.map { it.map { i->allWords[i] } }
     }

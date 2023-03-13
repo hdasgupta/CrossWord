@@ -29,6 +29,8 @@ class BOToEntity {
 
         _word.direction = map(word.direction()!!)
 
+        _word.description = word.desc
+
         _word.locations = word.map { map(it) }
 
         _word.locations!!.forEach {

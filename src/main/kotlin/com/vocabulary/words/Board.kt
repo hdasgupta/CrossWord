@@ -49,10 +49,10 @@ class Board: ArrayList<Word>(), Comparable<Board> {
         this.locations = indices.toMutableList()
     }
 
-    fun add(word: String): List<Board> =
+    fun add(word: String, desc: String): List<Board> =
         if(isEmpty()) {
-            val word1 = Word(word)
-            val word2 = Word(word)
+            val word1 = Word(word, desc)
+            val word2 = Word(word, desc)
 
             val board1 = Board()
             val board2 = Board()
@@ -112,7 +112,7 @@ class Board: ArrayList<Word>(), Comparable<Board> {
                                                 .toList()
                                         )
 
-                                        val _word = Word(word)
+                                        val _word = Word(word, desc)
                                     _word.indices
                                         .forEach {
                                                 i->
@@ -227,7 +227,7 @@ class Board: ArrayList<Word>(), Comparable<Board> {
                                             .toList()
                                     )
 
-                                    val _word = Word(word)
+                                    val _word = Word(word, desc)
                                     _word.indices
                                         .forEach {
                                                 i->

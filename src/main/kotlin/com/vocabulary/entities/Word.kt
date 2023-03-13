@@ -12,6 +12,9 @@ class Word:Comparable<Word> {
     var id: Int? = null
 
     @Column
+    var description: String? = null
+
+    @Column
     var direction: Direction? = null
 
     @ManyToOne

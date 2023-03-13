@@ -5,7 +5,7 @@ import java.util.HashMap
 import java.util.TreeSet
 import java.util.stream.Collectors
 
-class Words (val words: List<String>) {
+class Words (val words: List<String>, descs: List<String>) {
     private val singleChars = words.flatMap { it.asIterable() }
         .stream()
         .collect(Collectors.toMap(fun (c:Char)=c, fun(_:Char)=1, fun (a:Int, b:Int)=a+b))
@@ -24,7 +24,7 @@ class Words (val words: List<String>) {
         ))
         .filter { it.value.size>1 }
 
-    private var combinations = add(words)
+    private var combinations = add(words, descs)
 
     init {
         combinations.forEach {
@@ -33,7 +33,7 @@ class Words (val words: List<String>) {
     }
 
 
-    private fun add(words: List<String>, index: Int=0, boards :TreeSet<Board> = TreeSet()):TreeSet<Board> =
+    private fun add(words: List<String>, descs: List<String>, index: Int=0, boards :TreeSet<Board> = TreeSet()):TreeSet<Board> =
         if(words.size==index) {
             boards
         } else {
@@ -42,18 +42,18 @@ class Words (val words: List<String>) {
             if(index==0) {
                 val board = Board()
                 _boards.addAll(
-                    board.add(words[index])
+                    board.add(words[index], descs[index])
                 )
             } else {
                 boards.map {
                     board ->
                     _boards.addAll(
-                        board.add(words[index])
+                        board.add(words[index], descs[index])
                     )
                 }
             }
 
-            add(words, index + 1, _boards)
+            add(words, descs, index + 1, _boards)
         }
 
     fun all(): Set<Board> = combinations

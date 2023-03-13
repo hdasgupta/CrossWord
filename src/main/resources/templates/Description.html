@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+    <!-- Popper -->
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
+    <script th:src="@{js/jquery-3.6.0.min.js}"></script>
+    <script th:src="@{js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{js/bootstrap-autocomplete.min.js}"></script>
+    <script src="extensions/resizable/bootstrap-table-resizable.js"></script>
+    <script th:src="@{js/common.js}"></script>
+    <link rel="stylesheet" th:href="@{css/common.css}">
+
+    <title>Listing Page</title>
+
+    <script>
+        function valid() {
+           for (let i = 0; i < [[${words.size}]]; i++) {
+              if($("#desc_"+i).val().trim().length==0) {
+                return false
+              }
+            }
+            return true
+        }
+    </script>
+</head>
+<body>
+
+<div th:if="${!words.isEmpty()}">
+    <form method="post" action="/html" onsubmit="return valid()">
+    <center>
+        <input type="hidden" name="wordCount" th:value="${words.size}">
+    <div style="font-size:32px"><b><u>ENTER DESCRIPTIONS</u></b></div>
+        <br/>
+    <table border="0" cellpadding="20">
+            <tr th:each="word, stat :${words}">
+                <td width="50" style="color: blue;">
+                    <center>
+                        <b>[[${stat.count}]].</b>
+                    </center>
+                </td>
+                <td style="color: blue;align: right">
+                    <center>
+                        <b>[[${word}]] : &nbsp;&nbsp;</b>
+                    </center>
+                </td>
+                <td width="200" height="40">
+                    <input type="hidden" th:id="${'word_'+stat.index}"  th:name="${'word_'+stat.index}" th:value="${word}">
+                    <input type="text" th:id="${'desc_'+stat.index}"  th:name="${'desc_'+stat.index}">
+                </td>
+            </tr>
+    </table>
+        <br/>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </center>
+    </form>
+</div>
+
+
+<div style="font-size:72px"  th:if="${words.isEmpty()}">
+    <center>
+        <b>NO COMBINATION FOUND FOR <span th:each="word, stat :${words}">[[${word}]]<span th:if="${stat.index<words.size}">,</span></span></b>
+    </center>
+</div>
+</body>
+</html>
