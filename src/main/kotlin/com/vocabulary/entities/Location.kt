@@ -14,7 +14,7 @@ class Location {
     @JoinColumn(name = "word_id", referencedColumnName = "id")
     var word: Word? = null
 
-    @Column
+    @Column(name = "_char")
     var char: String? = null
 
     @Column(name = "_row")
