@@ -9,7 +9,45 @@ import kotlin.math.roundToInt
 
 
 class Board: ArrayList<Word>(), Comparable<Board> {
-    val direction = 30.0
+    private val direction = 30.0
+    private lateinit var locations:MutableList<Indices>
+
+    fun hide(singleChars:List<Char>, positions: Map<Int, Set<Char>>):Unit {
+
+        val included = StringBuffer("N".repeat(size))
+
+        val locations = mutableListOf<Indices>()
+
+        singleChars.forEach {
+            indices.forEach {
+                i->
+                if(this[i].any { location -> location.char==it } && included[i]=='N') {
+                    locations.add(this[i].first { location -> location.char==it }.indices!!)
+                    included.setCharAt(i, 'Y')
+                }
+            }
+        }
+
+        included.indices
+            .filter { included[it]=='M' }
+            .forEach {
+                for(index in this[it].indices) {
+                        if(positions.containsKey(index)) {
+                            locations.add(this[it][index].indices!!)
+                            break
+                        }
+                    }
+                included.setCharAt(it, 'Y')
+            }
+
+        this.locations = locations
+    }
+
+    fun locations(): List<Indices> = locations.toList()
+
+    fun locations(indices: List<Indices>):Unit {
+        this.locations = indices.toMutableList()
+    }
 
     fun add(word: String): List<Board> =
         if(isEmpty()) {
@@ -97,7 +135,7 @@ class Board: ArrayList<Word>(), Comparable<Board> {
                                                         if (location.char != _word[i].char)
                                                             2 as Int
                                                         else
-                                                            1 as Int
+                                                            1
                                                     }
                                             }
                                             .max(fun(o1, o2)=o1.compareTo(o2))
@@ -142,7 +180,7 @@ class Board: ArrayList<Word>(), Comparable<Board> {
                                         .orElse(0) == 0
 
 
-                                    val emptyPrevCell = board!!.flatMap {
+                                    val emptyPrevCell = board.flatMap {
                                             _w ->
                                         _w.filter { loc ->
 
@@ -151,7 +189,7 @@ class Board: ArrayList<Word>(), Comparable<Board> {
                                         }
                                     }.isEmpty()
 
-                                    val emptyNextCell = board!!.flatMap {
+                                    val emptyNextCell = board.flatMap {
                                             _w ->
                                         _w.filter { loc ->
                                                     loc.indices!!.row() == _word.last().indices!!.row() + 1 &&
@@ -257,7 +295,7 @@ class Board: ArrayList<Word>(), Comparable<Board> {
                                         .max(fun(o1, o2)=o1.compareTo(o2))
                                         .orElse(0) == 0
 
-                                    val emptyTopCell = board!!.flatMap {
+                                    val emptyTopCell = board.flatMap {
                                             _w ->
                                         _w.filter { loc ->
 
@@ -266,7 +304,7 @@ class Board: ArrayList<Word>(), Comparable<Board> {
                                         }
                                     }.isEmpty()
 
-                                    val emptyBottomCell = board!!.flatMap {
+                                    val emptyBottomCell = board.flatMap {
                                             _w ->
                                         _w.filter { loc ->
                                             loc.indices!!.row() == _word.last().indices!!.row() &&
@@ -349,7 +387,7 @@ class Board: ArrayList<Word>(), Comparable<Board> {
         }
     }
 
-    fun strings(): String {
+    fun strings(): List<String> {
         val row = stream().mapToInt {
             it.maxOf { loc -> loc.indices!!.row() }
         }
@@ -372,7 +410,9 @@ class Board: ArrayList<Word>(), Comparable<Board> {
             }
         }
 
-        return strs.joinToString(",")
+
+
+        return strs.map { it.toString() }
     }
 
 

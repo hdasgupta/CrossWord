@@ -5,12 +5,16 @@
         <tr th:each="result, stat :${results}">
             <td th:each="c, s :${result}" width="30" height="30"
                 >
-                <div style="border: 1px solid blue;color:blue;width:30px;height:30px" th:if="${c!=' '}">
+                <div style="border: 1px solid blue;color:blue;width:30px;height:30px;background-color: #aaa" th:if="${c.char!=' ' && c.inverted}">
                     <center>
-                        [[${c}]]
+                        <b>[[${c.char}]]</b>
                     </center>
                 </div>
-
+                <div style="border: 1px solid blue;color:blue;width:30px;height:30px;" th:if="${c.char!=' ' && !c.inverted}">
+                    <center>
+                        <b>[[${c.char}]]</b>
+                    </center>
+                </div>
             </td>
         </tr>
     </table>

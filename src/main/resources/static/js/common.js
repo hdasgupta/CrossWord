@@ -1,7 +1,3 @@
-var autoload = currScript.attr('data-autoload');
-
-
-
 var lastResponse = {}
 var responses = {}
 var successes = []

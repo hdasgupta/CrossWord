@@ -59,6 +59,7 @@ class Word(str: String):
 
     fun copy(): Word {
         val word = Word(toString())
+        word.direction = direction
         word.indices.forEach {
             word[it] = this[it].copy()
         }

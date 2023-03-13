@@ -24,18 +24,26 @@
     <table border="0" cellpadding="20">
         <div th:each="result, stat :${results}" th:remove="tag">
             <tr>
-                <td width="40">
-                    <input type="radio" th:id="${'radio_'+stat.count}" th:name="${'radio_'+stat.count}">
+                <td width="50" style="color: blue;">
+                    <center>
+                        <b>[[${stat.count}]].</b>
+                    </center>
                 </td>
-                <td th:id="${'table_'+stat.count}">
-                    <script>
-                load("#[[${'table_'+stat.count}]]", {'cross': '[[${result}]]'}, "[[${#request.scheme + '://' + #request.serverName + ':' + #request.serverPort + #request.contextPath + '/cross'}]]")
-            </script>
-
+                <td>
+                    <center th:id="${'table_'+stat.count}">
+                        <script>
+                            load("#[[${'table_'+stat.count}]]", {'cross': '[[${result}]]'}, "[[${#request.scheme + '://' + #request.serverName + ':' + #request.serverPort + #request.contextPath + '/cross'}]]")
+                        </script>
+                    </center>
+                </td>
+                <td width="200">
+                    <center>
+                        <a class="btn btn-primary" th:href="@{/choose(choose=${result})}">Choose</a>
+                    </center>
                 </td>
             </tr>
             <tr>
-                <td height="20" colspan="2"><hr/></td>
+                <td height="40" colspan="2"></td>
             </tr>
         </div>
 

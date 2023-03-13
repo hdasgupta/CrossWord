@@ -2,28 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <script src="/js/jquery-3.6.0.min.js"></script>
-    <script src="/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css" rel="stylesheet" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+
+
     <title>Enter all words</title>
+
+    <script>
+
+        $(function () {
+
+            $(".prompt").autocomplete({
+                minLength: 3,
+                source : function( request, response ) {
+                    if(extractLast(request.term).length >=3) {
+                        $.ajax({
+                            url: "/words/"+extractLast( request.term ),
+                            dataType: "json",
+                            success: function (data) {
+                                response( data  );
+                            }
+                        });
+                    }
+                },
+                focus: function () {
+                    //$(".prompt").val(ui.item.value);
+                    return false;
+                },
+                select: function (event, ui) {
+                    var terms = split( this.value );
+                    terms.pop();
+                    terms.push( ui.item.value );
+                    terms.push( "" );
+                    this.value = terms.join( ", " );
+                    return false;
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                    return $("<li>")
+                        .data("ui-autocomplete-item", item.value)
+                        .append("<a><b style='font-size: 42px'> " + item.value + "</b></a>")
+                        .appendTo(ul);
+                };;
+        });
+
+        function split( val ) {
+            return val.split( /,\s*/ );
+          }
+
+          function extractLast( term ) {
+             return split( term ).pop();
+           }
+
+    </script>
 </head>
 <body>
                 <center>
-                    <div>
-                    <span class="input-group-text" id="basic-addon1" style="font-size:42px">
-                        <table>
-                            <tr>
-                                <td style="vertical-align: middle;padding: 0;margin: 0;">Enter comma separated words :</td>
-                            </tr>
-                        </table>
-                    </span>
-                    </div>
+                    <h1 style="font-size: 42px;"><u>Enter comma separated words</u></h1>
+                    <br/>
                     <form action="/html" method="get">
-                    <input type="text" tabindex="1"
-                           class="form-control basicAutoComplete cfc" id="words" name="words"
-                           placeholder="Enter comma separated words..." style="font-size:42px"
-                    >
-                    <button class="btn btn-primary" type="submit" style="font-size:42px">Generate</button>
+                        <input type="text" class="prompt" id="words" name="words"
+                                placeholder="Enter comma separated words..."
+                                style="font-size:42px;width:100%;" width="100%">
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <button class="btn btn-primary" type="submit" style="font-size:42px">Generate</button>
                     </form>
                 </center>
 

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
+<script th:src="@{js/bootstrap.bundle.min.js}"></script>
+
+<script>
+        const data = [
+            'A', 'B', 'C', 'D', 'E', 'F',
+            'G', 'H', 'I', 'J', 'K', 'L',
+            'M', 'N', 'O', 'P', 'Q', 'R',
+            'S', 'T', 'U', 'V', 'W', 'X',
+            'Y', 'Z'
+        ]
+
+
+       $(function () {
+
+            $( ".alpha_menu" ).menu();
+        });
+        
+        function change(row, column, _this) {
+            $('#select_'+row+'_'+column).html($(_this).text());
+            $('#char_'+row+'_'+column).val($(_this).text());
+        }
+
+</script>
+<style>
+.alpha_menu {
+    width: 30px;
+    font-size: 24px;
+}
+</style>
+<body>
+<form method="post" action="/verify">
+    <input type="hidden" name="choose" th:value="${choose}">
+    <center>
+        <h1>Fill banks</h1>
+        <br/>
+        <table border="0" cellpadding="0" style="font-size:32px">
+            <tr th:each="result, stat :${results}">
+                <td th:each="c, s :${result}" width="50" height="50"
+                >
+                    <div th:id="${'char_'+stat.index+'_'+s.index}"
+                         th:name="${'char_'+stat.index+'_'+s.index}"
+                         style="border: 1px solid blue;color:blue;width:50px;height:50px;background-color: #aaa"
+                         th:if="${c.char!=' ' && c.inverted}">
+                        <center>
+                            <b>[[${c.char}]]</b>
+                        </center>
+                    </div>
+                    <div style="border: 1px solid blue;color:blue;width:50px;height:50px;"
+                         th:if="${c.char!=' ' && !c.inverted}">
+                        <center>
+                            <input th:id="${'char_'+stat.index+'_'+s.index}"
+                                   th:name="${'char_'+stat.index+'_'+s.index}"
+                                   value="_"
+                                   type="hidden">
+                            <ul class="alpha_menu">
+                                <li><div th:id="${'select_'+stat.index+'_'+s.index}">_</div>
+                                    <ul>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">A</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">B</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">C</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">D</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">E</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">F</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">G</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">H</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">I</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">J</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">K</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">L</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">M</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">N</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">O</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">P</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">Q</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">R</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">S</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">T</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">U</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">V</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">W</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">X</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">Y</li>
+                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">Z</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </center>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <br />
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </center>
+
+</form>
+
+</body>
+</html>
