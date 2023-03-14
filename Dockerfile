@@ -1,14 +1,9 @@
-#
-
 FROM ubuntu:java
 
-COPY ./target/CrossWord-1.0-SNAPSHOT.jar .
-
-COPY ./sampledata.trace .
-
-COPY ./sampledata.mv .
+COPY ./target/CrossWord-1.0-SNAPSHOT.jar /root/out.jar
 
 EXPOSE 80
 
-ENTRYPOINT java -jar CrossWord-1.0-SNAPSHOT.jar
+EXPOSE 8082
 
+ENTRYPOINT java -jar /root/out.jar
