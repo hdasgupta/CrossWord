@@ -13,6 +13,24 @@
     <script th:src="@{js/common.js}"></script>
     <link rel="stylesheet" th:href="@{css/common.css}">
 
+    <script>
+
+        function refresh() {
+            $.get({
+                url: "/random/board/"+$('#random').val(),
+                dataType: "json",
+                success: function (data) {
+                    $('#random').val(data.value);
+                    $('#random_blank').val(data.value);
+                    $('#random_desc').val(data.value);
+                    load("#table_random", {'cross': data.value}, "[[${#request.scheme + '://' + #request.serverName + ':' + #request.serverPort + #request.contextPath + '/cross'}]]")
+                }
+            })
+
+
+
+        }
+    </script>
     <title>Listing Page</title>
 </head>
 <body>
@@ -21,10 +39,49 @@
     <center>
     <div style="font-size:32px"><b><u>COMBINATIONS FOR <span th:each="word, stat :${words}">[[${word}]]<span th:if="${stat.count<words.size}">,</span></span></u></b></div>
         <br/>
+        <a class="btn btn-primary btn-lg" href="javascript:refresh()">Refresh</a>
+        <br/>
+        <br/>
+        <input type="hidden" name="random" id="random" th:value="${random}">
     <table border="0" cellpadding="20">
+        <tr>
+            <td width="100" style="color: blue;">
+                <center>
+                    <b>Random.</b>
+                </center>
+            </td>
+            <td>
+                <center id='table_random'>
+                    <script>
+                            load("#table_random", {'cross': '[[${random}]]'}, "[[${#request.scheme + '://' + #request.serverName + ':' + #request.serverPort + #request.contextPath + '/cross'}]]")
+                        </script>
+                </center>
+            </td>
+            <td width="200">
+                <center>
+                    <form method="get" action="/choose">
+                        <input type="hidden" id="random_blank" name="choose" th:value="${random}">
+                        <button class="btn btn-primary" type="submit">With Blanks</button>
+                    </form>
+                </center>
+            </td>
+            <td width="200">
+                <center>
+                    <form method="get" action="/choose">
+                        <input type="hidden" id="random_desc" name="choose" th:value="${random}">
+                        <input type="hidden" name="desc" value="true">
+                        <button class="btn btn-primary" type="submit">With Descriptions</button>
+                    </form>
+                </center>
+            </td>
+        </tr>
+        <tr>
+            <td height="40" colspan="2"></td>
+        </tr>
+
         <div th:each="result, stat :${results}" th:remove="tag">
             <tr>
-                <td width="50" style="color: blue;">
+                <td width="100" style="color: blue;">
                     <center>
                         <b>[[${stat.count}]].</b>
                     </center>
@@ -38,7 +95,12 @@
                 </td>
                 <td width="200">
                     <center>
-                        <a class="btn btn-primary" th:href="@{/choose(choose=${result})}">Choose</a>
+                        <a class="btn btn-primary" th:href="@{/choose(choose=${result})}">With Blanks</a>
+                    </center>
+                </td>
+                <td width="200">
+                    <center>
+                        <a class="btn btn-primary" th:href="@{/choose(choose=${result}, desc=true)}">With Descriptions</a>
                     </center>
                 </td>
             </tr>

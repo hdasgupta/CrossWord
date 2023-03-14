@@ -53,15 +53,18 @@
                         </center>
                     </div>
                     <div style="border: 1px solid blue;color:blue;width:50px;height:50px;"
-                         th:if="${hasDesc || (!hasDesc && c.char!=' ' && !c.inverted)}">
-                        <span th:if="${hasDesc}" style="font-size: 6px">[[${''+c.index+'.'}]]</span>
+                         th:if="${(hasDesc && c.char!=' ') || (!hasDesc && c.char!=' ' && !c.inverted)}">
                         <center>
                             <input th:id="${'char_'+stat.index+'_'+s.index}"
                                    th:name="${'char_'+stat.index+'_'+s.index}"
                                    value="_"
                                    type="hidden">
                             <ul class="alpha_menu">
-                                <li><div th:id="${'select_'+stat.index+'_'+s.index}">_</div>
+                                <li>
+                                    <div>
+                                        <span th:if="${hasDesc && !c.index.trim().isEmpty()}" style="font-size: 10px; color:blue;position: absolute;"><b>([[${c.index}]])</b></span>
+                                        <span th:id="${'select_'+stat.index+'_'+s.index}">_</span>
+                                    </div>
                                     <ul>
                                         <li th:onclick="|change(${stat.index},${s.index}, this)|">A</li>
                                         <li th:onclick="|change(${stat.index},${s.index}, this)|">B</li>
@@ -98,16 +101,22 @@
             </tr>
         </table>
         <br />
-        <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr th:each="description, stat :${descriptions}">
-                <td width="30">
-                    [[${stat.count}]].
-                </td>
-                <td style="align: left">
-                    [[${descriptions}]]
-                </td>
-            </tr>
-        </table>
+        <br/>
+        <b>
+            <i>
+                <table border="0" cellspacing="0" cellpadding="0">
+                    <tr th:each="description, stat :${descriptions}">
+                        <td width="30" height="20">
+                            [[${stat.count}]].
+                        </td>
+                        <td style="align: left">
+                            [[${description}]]
+                        </td>
+                    </tr>
+                </table>
+            </i>
+        </b>
+        <br/>
         <br/>
         <button class="btn btn-primary" type="submit">Submit</button>
     </center>

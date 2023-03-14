@@ -12,6 +12,7 @@ import com.vocabulary.words.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.ModelMap
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -100,6 +101,8 @@ class CrossWordController {
 
         map["results"] = results
 
+        map["random"] = results.random()
+
         return "List"
     }
 
@@ -110,7 +113,7 @@ class CrossWordController {
         return "CrossWord"
     }
 
-    @RequestMapping(value = ["/choose"])
+    @GetMapping(value = ["/choose"])
     fun choose(@RequestParam choose: Int, @RequestParam desc : Boolean = false, map: ModelMap): String {
         val board = findEntity.findBoard(choose)
 
@@ -126,7 +129,9 @@ class CrossWordController {
             else
                 listOf()
 
-        map["hasDesc"]=desc
+        map["hasDesc"] = desc
+
+        map["choose"] = choose
 
         return "Choose"
     }
@@ -197,12 +202,20 @@ class CrossWordController {
                 .stream()
                 .collect(Collectors.toMap(
                     fun(i:Int)=cross.words!![i].locations!![0].row!!,
-                    fun(i:Int)= mapOf(Pair(cross.words!![i].locations!![0].column!!, i)),
-                    fun(map1:Map<Int, Int>, map2:Map<Int, Int>):Map<Int, Int> {
-                        val map = mutableMapOf<Int, Int>()
-                        map.putAll(map1)
-                        map.putAll(map2)
-                        return map
+                    fun(i:Int)= mapOf(Pair(cross.words!![i].locations!![0].column!!, listOf(i+1))),
+                    fun(map1:Map<Int, List<Int>>, map2:Map<Int, List<Int>>):Map<Int, List<Int>> {
+                        val map = mutableMapOf<Int, MutableList<Int>>()
+                        map1.forEach {
+                            map[it.key] = it.value.toMutableList()
+                        }
+                        map2.forEach {
+                            if(map.containsKey(it.key)) {
+                                map[it.key]?.addAll(it.value)
+                            } else {
+                                map[it.key] = it.value.toMutableList()
+                            }
+                        }
+                        return map.map { Pair<Int, List<Int>>(it.key, it.value) }.toMap()
                     }
                     ))
 
@@ -234,7 +247,7 @@ class CrossWordController {
                                     " "
                                 },
                                 if(words.containsKey(r) && words[r]!!.containsKey(c)) {
-                                    words[r]!![c]!!.toString()
+                                    words[r]!![c]!!.joinToString(",")
                                 } else {
                                     " "
                                 },

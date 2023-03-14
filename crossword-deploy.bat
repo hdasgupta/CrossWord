@@ -1,0 +1,1 @@
+.\common-build-deploy.bat crossword 80 1000 8082 8082
