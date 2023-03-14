@@ -1,4 +1,4 @@
-@echo off
+@echo on
 setlocal enabledelayedexpansion
 
 set argCount=0
@@ -27,13 +27,19 @@ set outPort=
 
 :outrotine
 
-	set mvnCommand=.\mvnw clean install
-	set dockerBuildCommand=docker build -t !tag:%toRemove% =! .
-	set dockerStopCommand=docker stop -t 10 !tag:%toRemove% =!
-	set dockerDropCommand=docker rm -f !tag:%toRemove% =!
-	set dockerCreateCommand=docker create!ports:%toRemove% =! --name !tag:%toRemove% =! !tag:%toRemove% =!
-	set dockerRunCommand=docker start !tag:%toRemove% =!
-	set appURL=http://localhost:!outPort:%toRemove% =!
+set mvnCommand=.\mvnw clean install
+set dockerBuildCommand=docker build -t !tag:%toRemove% =! .
+set dockerStopCommand=docker stop -t 10 !tag:%toRemove% =!
+set dockerDropCommand=docker rm -f !tag:%toRemove% =!
+set dockerCreateCommand=docker create!ports:%toRemove% =! --name !tag:%toRemove% =! !tag:%toRemove% =!
+set dockerRunCommand=docker start !tag:%toRemove% =!
+set appURL=http://localhost:!outPort:%toRemove% =!
 
-	echo Executing Maven Build Command... && %mvnCommand% && echo Executing Docker Image Build Command... && %dockerBuildCommand% && echo Deleting Container (If Exists) && %dockerStopCommand% & %dockerDropCommand% & echo Executing Docker Component Create Command... && %dockerCreateCommand% && echo Executing Docker Container Run Command && %dockerRunCommand% && echo Docker Component Created Successfully. && TIMEOUT 30 && echo Opening %appURL%... && start %appURL%
+echo Executing Maven Build Command... && %mvnCommand% && ^
+echo Executing Docker Image Build Command... && %dockerBuildCommand% && ^
+echo Deleting Container (If Exists) && %dockerStopCommand% & %dockerDropCommand% & ^
+echo Executing Docker Component Create Command... && %dockerCreateCommand% && ^
+echo Executing Docker Container Run Command && %dockerRunCommand% && ^
+echo Docker Component Created Successfully. && TIMEOUT 30 && ^
+echo Opening %appURL%... && start %appURL%
 
