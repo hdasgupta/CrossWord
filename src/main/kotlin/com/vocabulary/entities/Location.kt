@@ -23,5 +23,11 @@ class Location {
     @Column(name = "_column")
     var column: Int? = null
 
+    override fun equals(other: Any?): Boolean =
+        other is Location &&
+                char==other.char &&
+                row==other.row &&
+                column==other.column
+
 
 }

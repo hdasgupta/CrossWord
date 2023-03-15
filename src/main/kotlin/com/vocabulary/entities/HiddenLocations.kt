@@ -19,4 +19,9 @@ class HiddenLocations {
 
     @Column(name = "_column")
     var column: Int? = null
+
+    override fun equals(other: Any?): Boolean =
+        other is HiddenLocations &&
+                row==other.row &&
+                column==other.column
 }
