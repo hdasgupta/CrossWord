@@ -1,6 +1,7 @@
 package com.vocabulary.controller
 
 import com.vocabulary.entities.Board
+import com.vocabulary.entities.HiddenLocations
 import com.vocabulary.entities.Location
 import com.vocabulary.mappers.BOToEntity
 import com.vocabulary.mappers.EntityToBO
@@ -114,22 +115,19 @@ class CrossWordController {
     }
 
     @GetMapping(value = ["/choose"])
-    fun choose(@RequestParam choose: Int, @RequestParam desc : Boolean = false, map: ModelMap): String {
+    fun choose(@RequestParam choose: Int, @RequestParam clue : Boolean = false, map: ModelMap): String {
         val board = findEntity.findBoard(choose)
 
         map["results"] =
-            if(!desc)
-                getResult(board)
-            else
+//            if(!clue)
+//                getResult(board)
+//            else
                 getIndexes(board)
 
         map["descriptions"] =
-            if(desc)
                 board!!.words!!.map { it.description!! }
-            else
-                listOf()
 
-        map["hasDesc"] = desc
+        map["clue"] = clue
 
         map["choose"] = choose
 
@@ -183,12 +181,11 @@ class CrossWordController {
             val locations =  cross.words!!
                 .flatMap { it.locations!! }
 
-            val hidden = cross.words!!
-                .flatMap { it.locations!! }
+            val hidden = cross.hiddenLocations!!
                 .stream()
                 .collect(Collectors.toMap(
-                    fun(location:Location)=location.row!!,
-                    fun(location:Location)= listOf(location.column!!),
+                    fun(location:HiddenLocations)=location.row!!,
+                    fun(location:HiddenLocations)= listOf(location.column!!),
                     fun(list1:List<Int>, list2:List<Int>):List<Int> {
                         val list = mutableListOf<Int>()
                         list.addAll(list1)

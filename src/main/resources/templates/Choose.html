@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-<link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
-<script th:src="@{js/bootstrap.bundle.min.js}"></script>
+<link href=
+              "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
+      rel="stylesheet" />
+<link href=
+              "https://cdn.jsdelivr.net/gh/semantic-ui-forest/forest-themes@master/dist/semantic-ui/v2/semantic.semantic-ui.min.css"
+      rel="stylesheet" />
+<script src=
+                "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js">
+</script>
 
 <script>
         const data = [
@@ -18,7 +23,16 @@
 
        $(function () {
 
-            $( ".alpha_menu" ).menu();
+            $('.menu .browse')
+                .popup({
+                  inline     : true,
+                  hoverable  : true,
+                  position   : 'right center',
+                  delay: {
+                    show: 100,
+                    hide: 300
+                  }
+                })
         });
         
         function change(row, column, _this) {
@@ -29,8 +43,21 @@
 </script>
 <style>
 .alpha_menu {
-    width: 30px;
+    width: 60px;
     font-size: 24px;
+}
+
+button.item {
+    font-size: 14px;
+    color: blue;
+    font-weight: bolder;
+}
+
+a.item {
+    font-size: 32px;
+    color: blue;
+    font-weight: bolder;
+    text-align: center;
 }
 </style>
 <body>
@@ -38,87 +65,98 @@
     <input type="hidden" name="choose" th:value="${choose}">
     <center>
         <h1>Fill banks</h1>
-        <br/>
-        <table border="0" cellpadding="0" style="font-size:32px">
-            <tr th:each="result, stat :${results}">
-                <td th:each="c, s :${result}" width="50" height="50"
-                >
+        <table border="0" cellspacing="20" cellpadding="20">
+            <tr>
+                <td>
+                    <table border="0" cellpadding="0" style="font-size:32px">
+                        <tr th:each="result, stat :${results}">
+                            <td th:each="c, s :${result}" width="60" height="60"
+                            >
+                                <span th:if="${!c.index.trim().isEmpty()}" style="font-size: 10px; color:blue;position:absolute"><b>([[${c.index}]])</b></span>
+                                <div th:id="${'char_'+stat.index+'_'+s.index}"
+                                     th:name="${'char_'+stat.index+'_'+s.index}"
+                                     style="border: 1px solid blue;color:blue;width:60px;height:60px;background-color: #aaa;text-align: center;font-weight: bolder;line-height: 60px;"
+                                     th:if="${clue && c.char!=' ' && c.inverted}">
+                                       [[${c.char}]]
+                                </div>
+                                <div style="border: 1px solid blue;color:blue;width:60px;height:60px;"
+                                     th:if="${(!clue && c.char!=' ') || (clue && c.char!=' ' && !c.inverted)}">
+                                        <input th:id="${'char_'+stat.index+'_'+s.index}"
+                                               th:name="${'char_'+stat.index+'_'+s.index}"
+                                               value="_"
+                                               type="hidden">
+                                        <div class="ui menu">
+                                                <button type="button" class="browse item" style="border: 0px">
+                                                    <span th:id="${'select_'+stat.index+'_'+s.index}">_</span>
+                                                    <i class="dropdown icon" style="position:absolute"></i>
+                                                </button>
+                                                <div class="ui fluid popup">
+                                                    <div class="ui four column relaxed divided grid" style="width: 300px">
+                                                        <div class="column" style="width: 75px">
+                                                            <div class="ui link list">
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">A</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">B</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">C</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">D</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">E</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">F</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="column" style="width: 75px">
+                                                            <div class="ui link list">
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">G</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">H</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">I</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">J</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">K</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">L</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">M</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="column" style="width: 75px">
+                                                            <div class="ui link list">
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">N</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">O</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">P</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">Q</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">R</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">S</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">T</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="column" style="width: 75px">
+                                                            <div class="ui link list">
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">U</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">V</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">W</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">X</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">Y</a>
+                                                                <a class="item primary" th:onclick="|change(${stat.index},${s.index}, this)|">Z</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
 
-                    <div th:id="${'char_'+stat.index+'_'+s.index}"
-                         th:name="${'char_'+stat.index+'_'+s.index}"
-                         style="border: 1px solid blue;color:blue;width:50px;height:50px;background-color: #aaa"
-                         th:if="${!hasDesc && c.char!=' ' && c.inverted}">
-                        <center>
-                            <b>[[${c.char}]]</b>
-                        </center>
-                    </div>
-                    <div style="border: 1px solid blue;color:blue;width:50px;height:50px;"
-                         th:if="${(hasDesc && c.char!=' ') || (!hasDesc && c.char!=' ' && !c.inverted)}">
-                        <center>
-                            <input th:id="${'char_'+stat.index+'_'+s.index}"
-                                   th:name="${'char_'+stat.index+'_'+s.index}"
-                                   value="_"
-                                   type="hidden">
-                            <ul class="alpha_menu">
-                                <li>
-                                    <div>
-                                        <span th:if="${hasDesc && !c.index.trim().isEmpty()}" style="font-size: 10px; color:blue;position: absolute;"><b>([[${c.index}]])</b></span>
-                                        <span th:id="${'select_'+stat.index+'_'+s.index}">_</span>
-                                    </div>
-                                    <ul>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">A</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">B</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">C</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">D</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">E</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">F</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">G</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">H</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">I</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">J</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">K</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">L</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">M</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">N</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">O</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">P</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">Q</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">R</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">S</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">T</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">U</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">V</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">W</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">X</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">Y</li>
-                                        <li th:onclick="|change(${stat.index},${s.index}, this)|">Z</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </center>
-                    </div>
+                </td>
+                <td>
+                    <center>
+                        <h2><u>Clues</u></h2>
+                    </center>
+
+                    <ol type="1">
+                        <li th:each="description :${descriptions}" style="font-size:18px; word-wrap: break-word;">
+                            [[${description}]]
+                        </li>
+                    </ol>
                 </td>
             </tr>
         </table>
-        <br />
-        <br/>
-        <b>
-            <i>
-                <table border="0" cellspacing="0" cellpadding="0">
-                    <tr th:each="description, stat :${descriptions}">
-                        <td width="30" height="20">
-                            [[${stat.count}]].
-                        </td>
-                        <td style="align: left">
-                            [[${description}]]
-                        </td>
-                    </tr>
-                </table>
-            </i>
-        </b>
-        <br/>
-        <br/>
-        <button class="btn btn-primary" type="submit">Submit</button>
+        <button class="ui primary button" type="submit">Submit</button>
     </center>
 
 </form>
